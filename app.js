@@ -24,7 +24,7 @@ const Tree = array => {
     return root
   }
 
-  const insert = (value, currentRoot = treeRoot) => {
+  const insertNode = (value, currentRoot = treeRoot) => {
     //base case of recursion, the current root whether the root of the Tree or a root of the branch is null so insert our value
     if (currentRoot === null) {
       currentRoot = Node(value)
@@ -32,16 +32,74 @@ const Tree = array => {
     }
     //recursion down tree to find a null slot to insert value
     if (value < currentRoot.data) {
-      currentRoot.leftChild = insert(value, currentRoot.leftChild)
+      currentRoot.leftChild = insertNode(value, currentRoot.leftChild)
     } else if (value > currentRoot.data) {
-      currentRoot.rightChild = insert(value, currentRoot.rightChild)
+      currentRoot.rightChild = insertNode(value, currentRoot.rightChild)
     }
     return currentRoot
   }
+
+  const deleteNode = (value, currentRoot = treeRoot) => {
+    //base case of recursion, the current root whether the root of the Tree or a root of the branch is null so delete our value
+    if (currentRoot === null) {
+      return currentRoot
+    }
+    //recursion down tree to find a null slot to insert value
+    if (value < currentRoot.data) {
+      currentRoot.leftChild = deleteNode(value, currentRoot.leftChild)
+    } else if (value > currentRoot.data) {
+      currentRoot.rightChild = deleteNode(value, currentRoot.rightChild)
+    } else {
+      //for single children
+      if (currentRoot.leftChild === null) {
+        return currentRoot.rightChild
+      } else if (currentRoot.rightChild === null) {
+        return currentRoot.leftChild
+      }
+      //for nodes with multiple children, find the next smallest node to replace it (or the node to the left of the right child)
+      currentRoot.data = minValue(currentRoot.rightChild)
+      //then delete
+      currentRoot.rightChild = deleteNode(
+        currentRoot.data,
+        currentRoot.rightChild
+      )
+    }
+    return currentRoot
+  }
+
+  const minValue = root => {
+    let minVal = root.data
+    while (root.leftChild !== null) {
+      minVal = root.leftChild.data
+      root = root.leftChild
+    }
+    return minVal
+  }
+
+  const find = (value , currentRoot = treeRoot) => {
+    //root is null or value is not found
+    if (currentRoot === null){
+      return null
+    }
+    //value found
+    if (currentRoot.data === value) {
+      return currentRoot
+    }
+    //recurse down tree to keep searching
+    if (value < currentRoot.data) {
+      return find(value, currentRoot.leftChild)
+    } else if (value > currentRoot.data) {
+      return find(value, currentRoot.rightChild)
+    }
+    return currentRoot
+  }
+
   return {
     treeRoot,
     buildTree,
-    insert
+    insertNode,
+    deleteNode,
+    find
   }
 }
 
@@ -69,7 +127,15 @@ const prettyPrint = (rootNode, prefix = '', isLeft = true) => {
 
 let tree = Tree([3, 1, 69, 5, 24, 5, 6, 9, 5])
 prettyPrint(tree.treeRoot)
-/* console.log( */tree.insert(3)
+/* console.log( */ tree.insertNode(3)
 prettyPrint(tree.treeRoot)
-tree.insert(6)
+console.log('insert 8')
+tree.insertNode(8)
 prettyPrint(tree.treeRoot)
+console.log('delete 6')
+tree.deleteNode(6)
+prettyPrint(tree.treeRoot)
+console.log('finding 9:')
+console.log(tree.find(9))
+console.log('finding 24:')
+console.log(tree.find(24))
