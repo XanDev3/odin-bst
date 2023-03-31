@@ -93,7 +93,7 @@ const Tree = array => {
     }
     return currentRoot
   }
-  //Use a breadth-first travesal to give each node in their levelOrder 
+  //Use a breadth-first travesal to give each node in their levelOrder
   const levelOrder = callback => {
     if (treeRoot === null) return
     //using an array as a FIFO queue to collect all nodes before visiting their children in the next level
@@ -101,12 +101,36 @@ const Tree = array => {
     let result = []
     while (queue.length > 0) {
       let currentNode = queue.shift()
-      if(currentNode.leftChild !== null)queue.push(currentNode.leftChild)
-      if(currentNode.rightChild !== null) queue.push(currentNode.rightChild)
+      if (currentNode.leftChild !== null) queue.push(currentNode.leftChild)
+      if (currentNode.rightChild !== null) queue.push(currentNode.rightChild)
       if (callback) callback(currentNode)
       else result.push(currentNode.data)
     }
     return result
+  }
+  const inOrder = (callback, currentRoot = treeRoot, inOrderArr = []) => {
+    if (currentRoot === null) return
+    //using an array collect all nodes in the perspective order (Left,Data,Right)
+    inOrder(callback, currentRoot.leftChild, inOrderArr)
+    callback ? callback(currentRoot) : inOrderArr.push(currentRoot.data)
+    inOrder(callback, currentRoot.rightChild, inOrderArr)
+    return inOrderArr
+  }
+  const preOrder = (callback, currentRoot = treeRoot, inOrderArr = []) => {
+    if (currentRoot === null) return
+    //using an array collect all nodes in the perspective order (Data,Left,Right)
+    callback ? callback(currentRoot) : inOrderArr.push(currentRoot.data)
+    inOrder(callback, currentRoot.leftChild, inOrderArr)
+    inOrder(callback, currentRoot.rightChild, inOrderArr)
+    return inOrderArr
+  }
+  const postOrder = (callback , currentRoot = treeRoot, inOrderArr = [])=> {
+    if (currentRoot === null) return
+    //using an array collect all nodes in the perspective order (Left,Right,Data)
+    inOrder(callback, currentRoot.leftChild, inOrderArr)
+    inOrder(callback, currentRoot.rightChild, inOrderArr)
+    callback ? callback(currentRoot) : inOrderArr.push(currentRoot.data)
+    return inOrderArr
   }
 
   return {
@@ -115,7 +139,10 @@ const Tree = array => {
     insertNode,
     deleteNode,
     find,
-    levelOrder
+    levelOrder,
+    inOrder,
+    preOrder,
+    postOrder,
   }
 }
 
@@ -156,3 +183,9 @@ console.log(tree.find(9))
 console.log('finding 24:')
 console.log(tree.find(24))
 console.log(tree.levelOrder())
+console.log('inOrder:')
+console.log(tree.inOrder())
+console.log('preOrder:')
+console.log(tree.preOrder())
+console.log('postOrder:')
+console.log(tree.postOrder())
