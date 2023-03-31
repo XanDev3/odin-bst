@@ -76,9 +76,9 @@ const Tree = array => {
     return minVal
   }
 
-  const find = (value , currentRoot = treeRoot) => {
+  const find = (value, currentRoot = treeRoot) => {
     //root is null or value is not found
-    if (currentRoot === null){
+    if (currentRoot === null) {
       return null
     }
     //value found
@@ -93,13 +93,29 @@ const Tree = array => {
     }
     return currentRoot
   }
+  //Use a breadth-first travesal to give each node in their levelOrder 
+  const levelOrder = callback => {
+    if (treeRoot === null) return
+    //using an array as a FIFO queue to collect all nodes before visiting their children in the next level
+    let queue = [treeRoot]
+    let result = []
+    while (queue.length > 0) {
+      let currentNode = queue.shift()
+      if(currentNode.leftChild !== null)queue.push(currentNode.leftChild)
+      if(currentNode.rightChild !== null) queue.push(currentNode.rightChild)
+      if (callback) callback(currentNode)
+      else result.push(currentNode.data)
+    }
+    return result
+  }
 
   return {
     treeRoot,
     buildTree,
     insertNode,
     deleteNode,
-    find
+    find,
+    levelOrder
   }
 }
 
@@ -139,3 +155,4 @@ console.log('finding 9:')
 console.log(tree.find(9))
 console.log('finding 24:')
 console.log(tree.find(24))
+console.log(tree.levelOrder())
