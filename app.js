@@ -100,11 +100,11 @@ const Tree = array => {
     let queue = [treeRoot]
     let result = []
     while (queue.length > 0) {
-      let currentNode = queue.shift()
-      if (currentNode.leftChild !== null) queue.push(currentNode.leftChild)
-      if (currentNode.rightChild !== null) queue.push(currentNode.rightChild)
-      if (callback) callback(currentNode)
-      else result.push(currentNode.data)
+      let currentRoot = queue.shift()
+      if (currentRoot.leftChild !== null) queue.push(currentRoot.leftChild)
+      if (currentRoot.rightChild !== null) queue.push(currentRoot.rightChild)
+      if (callback) callback(currentRoot)
+      else result.push(currentRoot.data)
     }
     return result
   }
@@ -124,7 +124,7 @@ const Tree = array => {
     inOrder(callback, currentRoot.rightChild, inOrderArr)
     return inOrderArr
   }
-  const postOrder = (callback , currentRoot = treeRoot, inOrderArr = [])=> {
+  const postOrder = (callback, currentRoot = treeRoot, inOrderArr = []) => {
     if (currentRoot === null) return
     //using an array collect all nodes in the perspective order (Left,Right,Data)
     inOrder(callback, currentRoot.leftChild, inOrderArr)
@@ -132,7 +132,52 @@ const Tree = array => {
     callback ? callback(currentRoot) : inOrderArr.push(currentRoot.data)
     return inOrderArr
   }
-
+  const height = node => {
+    if (node === null) return -1
+    const leftHeight = height(node.leftChild) + 1
+    const rightHeight = height(node.rightChild) + 1
+    return Math.max(leftHeight, rightHeight)
+  }
+  const depth = node => {
+    //base case - node not found/was null to begin with or node is the beginning of the tree
+    if (node === null || node === treeRoot) return 0
+    let currentRoot = treeRoot
+    let depthCount = 0
+    //loop through all nodes until the end of the tree or node is found
+    while (currentRoot !== node) {
+      depthCount++
+      if (node.data < currentRoot.data) {
+        currentRoot = currentRoot.leftChild
+      }
+      if (node.data > currentRoot.data) {
+        currentRoot = currentRoot.rightChild
+      }
+    }
+    return depthCount
+  }
+  const isBalanced = (currentRoot = treeRoot) => {
+    if (currentRoot === null) return true
+    if (
+      Math.abs(
+        height(currentRoot.leftChild) - height(currentRoot.rightChild)
+      ) <= 1 &&
+      isBalanced(currentRoot.leftChild) === true &&
+      isBalanced(currentRoot.rightChild) === true
+    )
+      return true
+    else return false
+  }
+  const traverse = (currentRoot = treeRoot, treeArr = []) => {
+    if (currentRoot === null) return
+    //collect all nodes like in the "Order" traversal methods
+    treeArr.push(currentRoot.data)
+    traverse(currentRoot.leftChild, treeArr)
+    traverse(currentRoot.rightChild, treeArr)
+  }
+  const reBalance = () => {
+    const unBalArr = inOrder()
+    return balTree = Tree(unBalArr)
+  }
   return {
     treeRoot,
     buildTree,
@@ -143,6 +188,10 @@ const Tree = array => {
     inOrder,
     preOrder,
     postOrder,
+    height,
+    depth,
+    isBalanced,
+    reBalance
   }
 }
 
@@ -182,10 +231,33 @@ console.log('finding 9:')
 console.log(tree.find(9))
 console.log('finding 24:')
 console.log(tree.find(24))
+/* console.log('levelOrder:')
 console.log(tree.levelOrder())
 console.log('inOrder:')
 console.log(tree.inOrder())
 console.log('preOrder:')
 console.log(tree.preOrder())
 console.log('postOrder:')
-console.log(tree.postOrder())
+console.log(tree.postOrder()) */
+console.log('insert 10')
+tree.insertNode(10)
+console.log('insert 18')
+tree.insertNode(18)
+console.log('insert 57')
+tree.insertNode(57)
+prettyPrint(tree.treeRoot)
+console.log(`height of ${tree.treeRoot.data}`)
+console.log(tree.height(tree.treeRoot))
+console.log(`height of ${tree.treeRoot.leftChild.data}`)
+console.log(tree.height(tree.treeRoot.leftChild))
+console.log(`height of ${tree.treeRoot.rightChild.data}`)
+console.log(tree.height(tree.treeRoot.rightChild))
+console.log(`depth of ${tree.treeRoot.rightChild.rightChild.data}`)
+console.log(tree.depth(tree.treeRoot.rightChild.rightChild))
+console.log('tree is balanced: ')
+console.log(tree.isBalanced())
+console.log('creating new balanced tree')
+const newTree = tree.reBalance()
+prettyPrint(newTree.treeRoot)
+console.log('new tree is balanced')
+console.log(newTree.isBalanced())
