@@ -1,4 +1,6 @@
-const Node = (data, left = null, right = null) => {
+import {prettyPrint} from './driverScript.js';
+
+export const Node = (data, left = null, right = null) => {
   return {
     data: data,
     leftChild: left,
@@ -6,7 +8,7 @@ const Node = (data, left = null, right = null) => {
   }
 }
 
-const Tree = array => {
+export const Tree = (array) => {
   //first sort array and remove duplicates by making it into a Set
   const uniqueArray = [...new Set(array.sort((a, b) => a - b))]
   let treeRoot = null
@@ -167,16 +169,10 @@ const Tree = array => {
       return true
     else return false
   }
-  const traverse = (currentRoot = treeRoot, treeArr = []) => {
-    if (currentRoot === null) return
-    //collect all nodes like in the "Order" traversal methods
-    treeArr.push(currentRoot.data)
-    traverse(currentRoot.leftChild, treeArr)
-    traverse(currentRoot.rightChild, treeArr)
-  }
   const reBalance = () => {
+    //used the inOrder method (could have used preOrder/postOrder as well) to extract a sorted list even though creating a new Tree will sort the list either way
     const unBalArr = inOrder()
-    return balTree = Tree(unBalArr)
+    return (Tree(unBalArr))
   }
   return {
     treeRoot,
@@ -195,31 +191,9 @@ const Tree = array => {
   }
 }
 
-//Pretty Print function provided by Odin Assignment
-const prettyPrint = (rootNode, prefix = '', isLeft = true) => {
-  if (rootNode === null) {
-    return
-  }
-  if (rootNode.rightChild !== null) {
-    prettyPrint(
-      rootNode.rightChild,
-      `${prefix}${isLeft ? '│   ' : '    '}`,
-      false
-    )
-  }
-  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${rootNode.data}`)
-  if (rootNode.leftChild !== null) {
-    prettyPrint(
-      rootNode.leftChild,
-      `${prefix}${isLeft ? '    ' : '│   '}`,
-      true
-    )
-  }
-}
-
-let tree = Tree([3, 1, 69, 5, 24, 5, 6, 9, 5])
+/* let tree = Tree([3, 1, 69, 5, 24, 5, 6, 9, 5])
 prettyPrint(tree.treeRoot)
-/* console.log( */ tree.insertNode(3)
+console.log( tree.insertNode(3)
 prettyPrint(tree.treeRoot)
 console.log('insert 8')
 tree.insertNode(8)
@@ -231,14 +205,6 @@ console.log('finding 9:')
 console.log(tree.find(9))
 console.log('finding 24:')
 console.log(tree.find(24))
-/* console.log('levelOrder:')
-console.log(tree.levelOrder())
-console.log('inOrder:')
-console.log(tree.inOrder())
-console.log('preOrder:')
-console.log(tree.preOrder())
-console.log('postOrder:')
-console.log(tree.postOrder()) */
 console.log('insert 10')
 tree.insertNode(10)
 console.log('insert 18')
@@ -254,10 +220,4 @@ console.log(`height of ${tree.treeRoot.rightChild.data}`)
 console.log(tree.height(tree.treeRoot.rightChild))
 console.log(`depth of ${tree.treeRoot.rightChild.rightChild.data}`)
 console.log(tree.depth(tree.treeRoot.rightChild.rightChild))
-console.log('tree is balanced: ')
-console.log(tree.isBalanced())
-console.log('creating new balanced tree')
-const newTree = tree.reBalance()
-prettyPrint(newTree.treeRoot)
-console.log('new tree is balanced')
-console.log(newTree.isBalanced())
+*/
