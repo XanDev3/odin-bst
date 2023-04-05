@@ -6,7 +6,7 @@ Also called an ordered or sorted binary tree, is where you take a group of data 
 
 In this project we are to build a Balanced BST (since an unbalanced tree can lead to degeneration, so that lookup performance is deteriorated to that of linear search) from a sorted array, making sure to remove any possible duplicates in the array or tree.
 
-Checking our BBST
+## Checking our BBST
 
 Write a simple driver script that does the following:
 1. Create a binary search tree from an array of random numbers. You can create a function that returns an array of random numbers every time you call it, if you wish.
